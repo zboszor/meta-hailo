@@ -6,8 +6,11 @@ BASE_URI = "https://hailo-hailort.s3.eu-west-2.amazonaws.com"
 FW_AWS_DIR = "Hailo8/${PV}/FW"
 FW = "hailo8_fw.${PV}.bin"
 LICENSE_FILE = "LICENSE"
-SRC_URI = "${BASE_URI}/${FW_AWS_DIR}/${FW};md5sum=a9a80585a6733674e2ca158ec15971c4 \
-		${BASE_URI}/${FW_AWS_DIR}/${LICENSE_FILE};md5sum=263ee034adc02556d59ab1ebdaea2cda"
+SRC_URI = "${BASE_URI}/${FW_AWS_DIR}/${FW};name=fw \
+		${BASE_URI}/${FW_AWS_DIR}/${LICENSE_FILE};name=lic"
+
+SRC_URI[fw.sha256sum] = "1ba9528972091ec17bebc0dc7ea2e6f4449efe70664890f6387ccbc7b60626ee"
+SRC_URI[lic.sha256sum] = "ca96445e6e33ae0a82170ea847b0925c864492f0cbb6342d42c54fd647133608"
 
 inherit allarch
 
