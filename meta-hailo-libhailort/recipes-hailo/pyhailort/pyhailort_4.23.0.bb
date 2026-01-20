@@ -5,12 +5,18 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://../../../../LICENSE;md5=ed57bbf10be0c74ecf2c80710208b2b3 \
                     file://../../../../LICENSE-3RD-PARTY.md;md5=87f8edc8e3d5342f8b0614df5bae3b58"
 
-SRC_URI = "git://git@github.com/hailo-ai/hailort.git;protocol=https;branch=hailo8"
+SRC_URI = "git://github.com/hailo-ai/hailort.git;protocol=https;branch=hailo8"
 SRCREV = "08f088d3b443c7846af067269ce998c6d5d91449"
 
-S = "${WORKDIR}/git/hailort/libhailort/bindings/python/platform"
+SRC_URI += " \
+    file://0001-Use-a-pre-built-pybind11-dependency.patch;patchdir=${S}/../../../../.. \
+    file://0002-Set-CMAKE_VERBOSE_MAKEFILE-to-ON.patch;patchdir=${S}/../../../../.. \
+    file://0003-Handle-more-settings-in-optional-cmake-arg-list.patch;patchdir=${S}/../../../../.. \
+"
 
-inherit pkgconfig hailort-base python3native setuptools3
+S .= "/hailort/libhailort/bindings/python/platform"
+
+inherit hailort-base python3native setuptools3
 
 DEPENDS += "python3-wheel-native libhailort python3-pybind11 git-native"
 RDEPENDS:${PN} += "libhailort python3-future python3-importlib-metadata python3-netifaces \
@@ -24,10 +30,20 @@ do_compile:prepend() {
 
     # allow linkage against HailoRT
     export HailoRT_DIR=${STAGING_LIBDIR}/cmake/HailoRT
+    export HAILORT_INCLUDE_DIR="${STAGING_INCDIR}"
+    export LIBHAILORT_PATH="${STAGING_LIBDIR}/libhailort.so"
     # allow linkage against pybind11
     export PYTHON_INCLUDE_DIRS=${STAGING_INCDIR}/python${PYTHON_BASEVERSION}
+    export Python_INCLUDE_DIR="${PYTHON_INCLUDE_DIR}"
+    export Python_LIBRARY="${PYTHON_LIBRARY}"
     # define the toolchain file
     export CMAKE_TOOLCHAIN_FILE=${WORKDIR}/toolchain.cmake
+    # Fix warning with cmake 4.x
+    export CMAKE_POLICY_VERSION_MINIMUM="3.10"
+    # Point to the pybind11 locations
+    export PYBIND11_FINDPYTHON="ON"
+    export PYBIND11_PYTHON_VERSION="${PYTHON_BASEVERSION}"
+    export _PYBIND11_CROSSCOMPILING="ON"
 }
 
 # prevents the following error:
