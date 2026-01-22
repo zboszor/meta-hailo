@@ -34,6 +34,9 @@ do_install:append() {
     rm -rf ${D}${libdir}/libgsthailometa*
     rm -rf ${D}${libdir}/libhailo_tracker*
     rm -rf ${D}${libdir}/libhailo_opencv_utils*
+    # These are in libgsthailotools-dev
+    rm -rf ${D}${libdir}/pkgconfig
+    rm -rf ${D}${includedir}
 }
 
 FILES:${PN} += "${libdir}/hailo-post-processes/* ${ROOTFS_POST_PROCESSES_DIR}/* ${ROOTFS_POST_PROCESSES_DIR}/so.* \
