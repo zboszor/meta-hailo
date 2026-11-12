@@ -12,6 +12,7 @@ SRC_URI += " \
     file://0001-Use-a-pre-built-pybind11-dependency.patch;patchdir=${S}/../../../../.. \
     file://0002-Set-CMAKE_VERBOSE_MAKEFILE-to-ON.patch;patchdir=${S}/../../../../.. \
     file://0003-Handle-more-settings-in-optional-cmake-arg-list.patch;patchdir=${S}/../../../../.. \
+	file://0001-Do-not-re-register-the-spdlog-logger.patch \
 "
 
 S .= "/hailort/libhailort/bindings/python/platform"

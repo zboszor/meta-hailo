@@ -21,6 +21,7 @@ SRC_URI += " \
 	file://0009-Build-parts-of-hailort-with-C-17.patch \
 	file://0010-Link-hailortcli-with-libabsl-parts.patch \
 	file://0013-Use-a-pre-built-grpc-dependency.patch \
+	file://0001-Do-not-re-register-the-spdlog-logger.patch \
 "
 
 inherit hailort-base

@@ -19,6 +19,7 @@ SRC_URI += " \
 	file://0008-Use-a-pre-built-readerwriterqueue-dependency.patch \
 	file://0009-Build-parts-of-hailort-with-C-17.patch \
 	file://0013-Use-a-pre-built-grpc-dependency.patch \
+	file://0001-Do-not-re-register-the-spdlog-logger.patch \
 "
 
 DEPENDS += " \

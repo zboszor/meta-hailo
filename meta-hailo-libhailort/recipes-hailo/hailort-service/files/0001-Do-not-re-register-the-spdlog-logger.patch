@@ -1,0 +1,45 @@
+From 0604fb05431ea8670f21fe377d423bb5ad7c8428 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Zolt=C3=A1n=20B=C3=B6sz=C3=B6rm=C3=A9nyi?=
+ <zboszor@gmail.com>
+Date: Thu, 12 Nov 2026 13:11:12 +0100
+Subject: [PATCH] Do not re-register the spdlog logger
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When the last client has quit from hailort_service, the logger is
+not torn down because there is no destructor in HailoRTOSLogger.
+
+The next client crashes hailort_service, because the already
+existing logger cannot be re-registered via the current code.
+
+To minimize the changes, query whether a logger with the expected
+name already exists in the HailoRTOSLogger constructor and use that.
+
+Signed-off-by: Zoltán Böszörményi <zboszor@gmail.com>
+Upstream-Status: Submitted [https://github.com/hailo-ai/hailort/pull/51]
+---
+ hailort/common/os/posix/os_utils.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/hailort/common/os/posix/os_utils.cpp b/hailort/common/os/posix/os_utils.cpp
+index 3bfca66..e61501d 100644
+--- a/hailort/common/os/posix/os_utils.cpp
++++ b/hailort/common/os/posix/os_utils.cpp
+@@ -27,7 +27,12 @@ namespace hailort
+ 
+ HailoRTOSLogger::HailoRTOSLogger()
+ {
+-    m_hailort_os_logger = spdlog::syslog_logger_mt("syslog", "hailort_service", LOG_PID);
++    std::shared_ptr<spdlog::logger> logger = spdlog::get("hailort_service");
++
++    if (logger != nullptr)
++        m_hailort_os_logger = logger;
++    else
++        m_hailort_os_logger = spdlog::syslog_logger_mt("syslog", "hailort_service", LOG_PID);
+     m_hailort_os_logger->set_pattern("%v");
+     m_hailort_os_logger->set_level(spdlog::level::debug);
+ }
+-- 
+2.56.1
+
